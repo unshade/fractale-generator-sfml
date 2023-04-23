@@ -3,6 +3,13 @@ uniform float zoom; // Facteur de zoom
 uniform vec2 offset; // Décalage pour centrer la fractale
 uniform vec2 juliaC; // Constante complexe pour l'ensemble de Julia
 
+vec3 hsvToRgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 void main()
 {
     // Convertir les coordonnées du pixel en coordonnées complexes
@@ -20,8 +27,8 @@ void main()
             break;
     }
 
-    // Calculer la couleur en fonction du nombre d'itérations
-    float color = i / 100.0;
+    vec3 rgb = hsvToRgb(vec3(i / 100.0, 0.5, 1.0));
     // Définir la couleur du fragment (pixel) avec la couleur calculée
-    gl_FragColor = vec4(vec3(color), 1.0);
+    gl_FragColor = vec4(rgb , 1.0);
 }
+

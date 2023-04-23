@@ -4,7 +4,7 @@
 
 int main() {
     // Créer une fenêtre SFML avec une résolution de 1920x1080
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Julia Set Fractal Generator");
+    sf::RenderWindow window(sf::VideoMode(2160, 1440), "Julia Set Fractal Generator");
     // Limiter le taux de rafraîchissement à 60 images par seconde
     window.setFramerateLimit(60);
 
@@ -38,6 +38,7 @@ int main() {
         float elapsedTime = clock.getElapsedTime().asSeconds();
         // Changer l'angle pour modifier l'ensemble de Julia
         float angle = elapsedTime * 0.5f;
+        std::cout << 0.8f * cos(angle) << std::endl;
         // Mettre à jour la constante complexe pour l'ensemble de Julia en fonction de l'angle
         shader.setUniform("juliaC", sf::Vector2f(0.8f * cos(angle), 0.8f * sin(angle)));
         // Effacer la fenêtre avec une couleur noire
@@ -45,6 +46,20 @@ int main() {
 
         // Dessiner le rectangle couvrant toute la fenêtre en utilisant le shader
         window.draw(screen, &shader);
+
+        // Dessiner par dessus les axes de coordonnées
+        sf::RectangleShape xAxis(sf::Vector2f((float) window.getSize().x, 1));
+        sf::RectangleShape yAxis(sf::Vector2f(1, (float) window.getSize().y));
+        xAxis.setPosition(0, (float) window.getSize().y / 2);
+        yAxis.setPosition((float) window.getSize().x / 2, 0);
+        window.draw(xAxis);
+        window.draw(yAxis);
+
+        sf::CircleShape point(5);
+        point.setFillColor(sf::Color::Black);
+        point.setPosition((float) window.getSize().x / 2 + 0.8f * cos(angle) * window.getSize().x / 2,
+                          (float) window.getSize().y / 2 + 0.8f * sin(angle) * window.getSize().y / 2);
+        window.draw(point);
 
         // Afficher le contenu de la fenêtre à l'écran
         window.display();
